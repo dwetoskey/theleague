@@ -3,90 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RL Stats Command Center</title>
+    <title>RL Live Client Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-950 text-slate-100 min-h-screen font-sans">
 
-    <!-- Header Navigation -->
+    <!-- Status Header -->
     <header class="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
-            <h1 class="text-xl font-bold tracking-wider text-white uppercase">RL_Tracker//Core</h1>
+            <div id="statusDot" class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+            <h1 class="text-xl font-bold tracking-wider text-white uppercase">RL_Local_Sync//Client</h1>
         </div>
-        <div class="text-xs text-slate-400 bg-gray-800 px-3 py-1 rounded-full font-mono border border-gray-700">
-            EAC Mode: Secure (External API)
+        <div id="statusText" class="text-xs text-red-400 bg-red-950/30 px-3 py-1 rounded-full font-mono border border-red-900/50">
+            Game Client Disconnected
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-8">
         
-        <!-- Search Controls Panel -->
-        <section class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 shadow-xl">
-            <h2 class="text-lg font-semibold mb-4 text-white">Target Player Lookup</h2>
-            <form id="searchForm" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1">
-                    <input type="text" id="playerIdInput" required
-                        placeholder="Enter Epic ID, Steam Name, or Tracker handle..." 
-                        class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors font-mono">
-                </div>
-                <div class="w-full md:w-48">
-                    <select id="platformSelect" 
-                        class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="epic">Epic Games</option>
-                        <option value="steam">Steam</option>
-                        <option value="xbox">Xbox Live</option>
-                        <option value="psn">PlayStation Network</option>
-                    </select>
-                </div>
-                <button type="submit" 
-                    class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors shadow-lg shadow-blue-600/10">
-                    Pull Profile Data
-                </button>
-            </form>
-        </section>
-
-        <!-- Main Display Arena -->
-        <div id="dashboardContent" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Live Dashboard Metrics Matrix -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left Panel: Profile & Session Metrics -->
+            <!-- Session Counter Cards -->
             <div class="space-y-6">
-                <!-- Profile Identity Card -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden shadow-xl">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl"></div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-2xl font-black text-white shadow-md font-mono" id="avatarFallback">
-                            VB
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-400 uppercase mb-4">Active Session Performance</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <span class="text-xs text-slate-500 block">Current Goals</span>
+                            <span id="sessionGoals" class="text-3xl font-bold text-white font-mono">0</span>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white tracking-tight" id="profileName">VeryBigDave</h3>
-                            <p class="text-xs text-slate-400 font-mono" id="profilePlatform">Platform: epic</p>
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <span class="text-xs text-slate-500 block">Current Saves</span>
+                            <span id="sessionSaves" class="text-3xl font-bold text-white font-mono">0</span>
+                        </div>
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <span class="text-xs text-slate-500 block">Total Score</span>
+                            <span id="sessionScore" class="text-3xl font-bold text-blue-400 font-mono">0</span>
+                        </div>
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <span class="text-xs text-slate-500 block">Demos Landed</span>
+                            <span id="sessionDemos" class="text-3xl font-bold text-orange-400 font-mono">0</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Session Tracker Widget -->
+                <!-- Match State Alert Banner -->
                 <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                    <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase mb-4">Live Session Summary</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                            <span class="text-xs text-slate-500 block">Net MMR Change</span>
-                            <span class="text-2xl font-bold text-emerald-400 font-mono" id="sessionNetMmr">+18</span>
-                        </div>
-                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                            <span class="text-xs text-slate-500 block">Matches Logged</span>
-                            <span class="text-2xl font-bold text-white font-mono" id="sessionMatchCount">2</span>
-                        </div>
+                    <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase mb-2">Arena Environment</h3>
+                    <div id="arenaName" class="text-lg font-bold text-white font-mono tracking-tight">Searching for Active Match...</div>
+                    <div class="mt-4 flex justify-between items-center bg-gray-950 p-3 rounded-lg border border-gray-800 font-mono text-sm">
+                        <span class="text-slate-400">Match Clock:</span>
+                        <span id="matchClock" class="font-bold text-white">0:00</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Panel: Playlist Ranks Matrix -->
-            <div class="lg:grid-cols-1 lg:col-span-2 space-y-4">
-                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                    <h3 class="text-md font-semibold text-white mb-4">Competitive Playlists</h3>
-                    <div class="space-y-3" id="playlistsContainer">
-                        <!-- Playlists are dynamically injected here by JS -->
+            <!-- Live Match Lobby Roster Matrix -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-md font-semibold text-white mb-4">Live Match Lobby Roster</h3>
+                    <div class="space-y-3" id="lobbyContainer">
+                        <div class="text-sm text-slate-500 text-center py-8 font-mono border border-dashed border-gray-800 rounded-lg">
+                            Waiting for local network telemetry packet data stream...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,67 +76,98 @@
     </main>
 
     <script>
-        // Sample static mock architecture to guarantee the app renders cleanly offline
-        const mockDb = {
-            "verybigdave": {
-                name: "VeryBigDave",
-                playlists: [
-                    { mode: "Ranked Duel 1v1", rank: "Diamond II", div: "Div III", mmr: 925 },
-                    { mode: "Ranked Doubles 2v2", rank: "Champion I", div: "Div II", mmr: 1080 },
-                    { mode: "Ranked Standard 3v3", rank: "Diamond III", div: "Div IV", mmr: 995 }
-                ]
-            }
-        };
-
-        const form = document.getElementById('searchForm');
+        let socket;
+        const port = 49123;
         
-        function renderProfile(playerData, platform) {
-            document.getElementById('profileName').innerText = playerData.name;
-            document.getElementById('profilePlatform').innerText = `Platform: ${platform}`;
-            document.getElementById('avatarFallback').innerText = playerData.name.substring(0,2).toUpperCase();
-            
-            const container = document.getElementById('playlistsContainer');
-            container.innerHTML = '';
-            
-            playerData.playlists.forEach(p => {
-                container.innerHTML += `
-                    <div class="flex items-center justify-between p-4 bg-gray-950 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors">
-                        <div>
-                            <h4 class="text-sm font-semibold text-white">${p.mode}</h4>
-                            <p class="text-xs text-slate-400">${p.rank} — <span class="font-mono">${p.div}</span></p>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-lg font-bold font-mono text-blue-400">${p.mmr}</span>
-                            <span class="text-xs text-slate-500 block uppercase tracking-wider font-mono">MMR</span>
-                        </div>
-                    </div>
-                `;
-            });
+        function connectWebSocket() {
+            // Establishing communication bridge with local game client port
+            socket = new WebSocket(`ws://127.0.0.1:${port}`);
+
+            socket.onopen = () => {
+                document.getElementById('statusDot').className = "w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50";
+                document.getElementById('statusText').className = "text-xs text-emerald-400 bg-emerald-950/30 px-3 py-1 rounded-full font-mono border border-emerald-900/50";
+                document.getElementById('statusText').innerText = "Live Game Linked Successfully";
+            };
+
+            socket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                
+                // Route telemetry packets based on specific event schemas
+                if (message.Event === "UpdateState" && message.Data) {
+                    updateMatchDashboard(message.Data);
+                }
+            };
+
+            socket.onclose = () => {
+                document.getElementById('statusDot').className = "w-3 h-3 rounded-full bg-red-500 animate-pulse";
+                document.getElementById('statusText').className = "text-xs text-red-400 bg-red-950/30 px-3 py-1 rounded-full font-mono border border-red-900/50";
+                document.getElementById('statusText').innerText = "Game Client Disconnected";
+                
+                // Automatic clean reconnection queue system
+                setTimeout(connectWebSocket, 5000);
+            };
+
+            socket.onerror = (err) => {
+                socket.close();
+            };
         }
 
-        // Initialize display with fallback data
-        renderProfile(mockDb["verybigdave"], "epic");
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const queryId = document.getElementById('playerIdInput').value.trim();
-            const platform = document.getElementById('platformSelect').value;
-            const normalizedKey = queryId.toLowerCase();
-
-            if (mockDb[normalizedKey]) {
-                renderProfile(mockDb[normalizedKey], platform);
-            } else {
-                // Dynamic fallback for fresh searches when serverless routing isn't set up yet
-                renderProfile({
-                    name: queryId,
-                    playlists: [
-                        { mode: "Ranked Duel 1v1", rank: "Unranked", div: "Div I", mmr: 600 },
-                        { mode: "Ranked Doubles 2v2", rank: "Diamond I", div: "Div II", mmr: 835 },
-                        { mode: "Ranked Standard 3v3", rank: "Unranked", div: "Div I", mmr: 600 }
-                    ]
-                }, platform);
+        function updateMatchDashboard(data) {
+            // Process basic structural metadata
+            if (data.Game) {
+                document.getElementById('arenaName').innerText = data.Game.Arena.replace('_P', '').replace('_', ' ');
+                
+                const mins = Math.floor(data.Game.TimeSeconds / 60);
+                const secs = Math.floor(data.Game.TimeSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('matchClock').innerText = `${mins}:${secs}${data.Game.bOvertime ? ' (OT)' : ''}`;
             }
-        });
+
+            // Process user and lobby stat listings dynamically
+            if (data.Players && data.Players.length > 0) {
+                const rosterContainer = document.getElementById('lobbyContainer');
+                rosterContainer.innerHTML = '';
+
+                data.Players.forEach(player => {
+                    // Update main view tracking cards using match details
+                    if (player.Shortcut === 0) { 
+                        document.getElementById('sessionGoals').innerText = player.Goals;
+                        document.getElementById('sessionSaves').innerText = player.Saves;
+                        document.getElementById('sessionScore').innerText = player.Score;
+                        document.getElementById('sessionDemos').innerText = player.Demos || 0;
+                    }
+
+                    // Dynamically map team colors cleanly
+                    const teamBorder = player.TeamNum === 0 ? "border-blue-600/50 bg-blue-950/10" : "border-orange-600/50 bg-orange-950/10";
+                    const teamBadge = player.TeamNum === 0 ? "text-blue-400" : "text-orange-400";
+
+                    rosterContainer.innerHTML += `
+                        <div class="flex items-center justify-between p-4 border rounded-lg ${teamBorder} transition-all">
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${player.Name}</h4>
+                                <p class="text-xs font-mono font-semibold ${teamBadge}">${player.TeamNum === 0 ? 'BLUE TEAM' : 'ORANGE TEAM'}</p>
+                            </div>
+                            <div class="flex gap-6 text-center font-mono">
+                                <div>
+                                    <span class="text-xs text-slate-500 block uppercase">Score</span>
+                                    <span class="text-sm font-bold text-white">${player.Score}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block uppercase">Shots</span>
+                                    <span class="text-sm font-bold text-white">${player.Shots}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block uppercase">Goals</span>
+                                    <span class="text-sm font-bold text-emerald-400">${player.Goals}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Initialize script loop connection on entry
+        connectWebSocket();
     </script>
 </body>
 </html>
